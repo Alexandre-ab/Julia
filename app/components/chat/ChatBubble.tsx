@@ -21,7 +21,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     const isUser = sender === 'user';
 
     return (
-        <View 
+        <View
             className={`mb-4 ${isUser ? 'items-end' : 'items-start'}`}
             style={{
                 marginBottom: 16,
@@ -29,26 +29,34 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             }}
         >
             <View
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${isUser ? 'bg-primary-600' : 'bg-secondary-100'}`}
+                className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-sm ${isUser ? 'bg-indigo-500' : 'bg-white border border-slate-200'}`}
                 style={{
                     maxWidth: '80%',
                     borderRadius: 16,
                     paddingHorizontal: 16,
                     paddingVertical: 12,
-                    backgroundColor: isUser ? COLORS.primary[600] : COLORS.background.tertiary,
+                    backgroundColor: isUser ? COLORS.indigo[500] : '#FFFFFF',
+                    borderWidth: isUser ? 0 : 1,
+                    borderColor: isUser ? 'transparent' : COLORS.slate[200],
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 2,
+                    elevation: 2,
                 }}
             >
-                <Text 
-                    className={`text-base ${isUser ? 'text-white' : 'text-secondary-900'}`}
+                <Text
+                    className={`text-base ${isUser ? 'text-white' : 'text-slate-900'}`}
                     style={{
                         fontSize: 16,
-                        color: isUser ? COLORS.text.inverse : COLORS.text.primary,
+                        lineHeight: 22,
+                        color: isUser ? COLORS.text.inverse : COLORS.slate[900],
                     }}
                 >
                     {text}
                 </Text>
 
-                <View 
+                <View
                     className="flex-row items-center justify-between mt-1"
                     style={{
                         flexDirection: 'row',
@@ -57,11 +65,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                         marginTop: 4,
                     }}
                 >
-                    <Text 
-                        className={`text-xs ${isUser ? 'text-primary-100' : 'text-secondary-500'}`}
+                    <Text
+                        className={`text-xs ${isUser ? 'text-indigo-100' : 'text-slate-500'}`}
                         style={{
                             fontSize: 12,
-                            color: isUser ? COLORS.primary[100] : COLORS.text.secondary,
+                            color: isUser ? COLORS.indigo[100] : COLORS.slate[500],
                         }}
                     >
                         {formatTime(timestamp)}
@@ -70,7 +78,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                     {gravityScore && gravityScore > 1 && (
                         <View
                             className="ml-2 w-2 h-2 rounded-full"
-                            style={{ 
+                            style={{
                                 marginLeft: 8,
                                 width: 8,
                                 height: 8,
@@ -83,11 +91,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             </View>
 
             {!isUser && (
-                <Text 
-                    className="text-xs text-secondary-500 mt-1 ml-2"
+                <Text
+                    className="text-xs text-slate-500 mt-1 ml-2"
                     style={{
                         fontSize: 12,
-                        color: COLORS.text.secondary,
+                        color: COLORS.slate[500],
                         marginTop: 4,
                         marginLeft: 8,
                     }}

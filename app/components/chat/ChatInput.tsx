@@ -31,24 +31,22 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
-            <View 
-                className="border-t border-secondary-200 bg-white p-3"
+            <View
+                className="bg-white p-4"
                 style={{
-                    borderTopWidth: 1,
-                    borderTopColor: COLORS.border.light,
                     backgroundColor: COLORS.background.primary,
-                    padding: 12,
-                    paddingBottom: 20, // More space from bottom
+                    padding: 16,
+                    paddingBottom: 24,
                 }}
             >
-                <View 
+                <View
                     className="flex-row items-end"
                     style={{
                         flexDirection: 'row',
                         alignItems: 'flex-end',
                     }}
                 >
-                    <View 
+                    <View
                         className="flex-1 mr-2"
                         style={{
                             flex: 1,
@@ -59,29 +57,35 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                             value={message}
                             onChangeText={setMessage}
                             placeholder={placeholder}
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={COLORS.slate[400]}
                             multiline
                             maxLength={MESSAGE_CONSTRAINTS.MAX_LENGTH}
                             editable={!disabled}
-                            className="border border-secondary-300 rounded-2xl px-4 py-2 max-h-[100px] text-base text-secondary-900"
-                            style={{ 
-                                minHeight: 40,
+                            className="border border-slate-300 rounded-full px-5 py-3 max-h-[100px] text-base text-slate-900 bg-white shadow-md"
+                            style={{
+                                minHeight: 44,
                                 borderWidth: 1,
-                                borderColor: COLORS.border.medium,
-                                borderRadius: 16,
-                                paddingHorizontal: 16,
-                                paddingVertical: 8,
+                                borderColor: COLORS.slate[300],
+                                borderRadius: 999,
+                                paddingHorizontal: 20,
+                                paddingVertical: 12,
                                 maxHeight: 100,
                                 fontSize: 16,
-                                color: COLORS.text.primary,
+                                color: COLORS.slate[900],
+                                backgroundColor: '#FFFFFF',
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.08,
+                                shadowRadius: 4,
+                                elevation: 3,
                             }}
                         />
                         {message.length > MESSAGE_CONSTRAINTS.MAX_LENGTH * 0.9 && (
-                            <Text 
-                                className="text-xs text-secondary-500 mt-1"
+                            <Text
+                                className="text-xs text-slate-500 mt-1"
                                 style={{
                                     fontSize: 12,
-                                    color: COLORS.text.secondary,
+                                    color: COLORS.slate[500],
                                     marginTop: 4,
                                 }}
                             >
@@ -93,17 +97,17 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                     <TouchableOpacity
                         onPress={handleSend}
                         disabled={!isValid || disabled}
-                        className={`w-10 h-10 rounded-full items-center justify-center ${isValid && !disabled ? 'bg-primary-600' : 'bg-secondary-300'}`}
+                        className={`w-11 h-11 rounded-full items-center justify-center ${isValid && !disabled ? 'bg-indigo-500' : 'bg-slate-300'}`}
                         style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 20,
+                            width: 44,
+                            height: 44,
+                            borderRadius: 22,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: isValid && !disabled ? COLORS.primary[600] : COLORS.border.medium,
+                            backgroundColor: isValid && !disabled ? COLORS.indigo[500] : COLORS.slate[300],
                         }}
                     >
-                        <Text 
+                        <Text
                             className="text-white text-lg font-bold"
                             style={{
                                 color: COLORS.text.inverse,

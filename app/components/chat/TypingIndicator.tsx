@@ -57,23 +57,23 @@ export const TypingIndicator: React.FC = () => {
 
     return (
         <View className="mb-4 items-start">
-            <View className="bg-secondary-100 rounded-2xl px-4 py-3">
+            <View className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-slate-200">
                 <View className="flex-row items-center space-x-1">
                     <Animated.View
                         style={[createDotStyle(dot1)]}
-                        className="w-2 h-2 rounded-full bg-secondary-600 mr-1"
+                        className="w-2 h-2 rounded-full bg-indigo-400 mr-1"
                     />
                     <Animated.View
                         style={[createDotStyle(dot2)]}
-                        className="w-2 h-2 rounded-full bg-secondary-600 mr-1"
+                        className="w-2 h-2 rounded-full bg-indigo-400 mr-1"
                     />
                     <Animated.View
                         style={[createDotStyle(dot3)]}
-                        className="w-2 h-2 rounded-full bg-secondary-600"
+                        className="w-2 h-2 rounded-full bg-indigo-400"
                     />
                 </View>
             </View>
-            <Text className="text-xs text-secondary-500 mt-1 ml-2">Assistant IA est en train d'écrire...</Text>
+            <Text className="text-xs text-slate-500 mt-1 ml-2">Assistant IA est en train d'écrire...</Text>
         </View>
     );
 };

@@ -23,7 +23,7 @@ export default function LoginScreen() {
             console.log('📡 Calling login API...');
             const response = await login({ email, password });
             console.log('✅ Login successful!');
-            
+
             // Redirection automatique vers la page appropriée
             // Note: Le composant index.tsx gérera la redirection selon le rôle
             router.replace('/');
@@ -43,7 +43,7 @@ export default function LoginScreen() {
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.content}>
                     <Text style={styles.title}>Bienvenue</Text>
-                    <Text style={styles.subtitle}>Connectez-vous à Projet J</Text>
+                    <Text style={styles.subtitle}>Connectez-vous à Projet Juli</Text>
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.label}>Email</Text>

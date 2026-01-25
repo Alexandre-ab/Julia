@@ -25,7 +25,8 @@
       "@utils/*": [
         "utils/*"
       ]
-    }
+    },
+    "jsx": "react-jsx"
   },
   "include": [
     "**/*.ts",

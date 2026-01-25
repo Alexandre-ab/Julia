@@ -10,18 +10,24 @@ export default function PatientLayout() {
                 tabBarActiveTintColor: COLORS.primary[600],
                 tabBarInactiveTintColor: COLORS.text.secondary,
                 tabBarStyle: {
-                    paddingBottom: 8,
-                    paddingTop: 8,
-                    height: 65,
+                    paddingBottom: 10,
+                    paddingTop: 10,
+                    height: 70,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 8,
+                    elevation: 8,
+                    borderTopWidth: 0,
                 },
             }}
         >
             <Tabs.Screen
                 name="chat"
                 options={{
-                    title: 'Discussion',
+                    headerTitle: '',
                     tabBarLabel: 'Chat',
-                    tabBarIcon: ({ color }) => <Text style={{ color }}>💬</Text>,
+                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>💬</Text>,
                 }}
             />
             <Tabs.Screen
@@ -29,7 +35,7 @@ export default function PatientLayout() {
                 options={{
                     title: 'Historique',
                     tabBarLabel: 'Historique',
-                    tabBarIcon: ({ color }) => <Text style={{ color }}>📋</Text>,
+                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📋</Text>,
                 }}
             />
             <Tabs.Screen
@@ -37,7 +43,7 @@ export default function PatientLayout() {
                 options={{
                     title: 'Profil',
                     tabBarLabel: 'Profil',
-                    tabBarIcon: ({ color }) => <Text style={{ color }}>👤</Text>,
+                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>👤</Text>,
                 }}
             />
         </Tabs>

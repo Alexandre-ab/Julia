@@ -32,9 +32,17 @@ app.use(
             // Allow requests with no origin (like mobile apps or Postman)
             if (!origin) return callback(null, true);
 
+            // In development, allow any localhost/127.0.0.1 origin
+            if (process.env.NODE_ENV === 'development') {
+                if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+                    return callback(null, true);
+                }
+            }
+
             if (allowedOrigins.includes(origin)) {
                 callback(null, true);
             } else {
+                console.error('Blocked by CORS:', origin); // Log the blocked origin
                 callback(new Error('Not allowed by CORS'));
             }
         },
