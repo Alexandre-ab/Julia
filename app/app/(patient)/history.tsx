@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { router } from 'expo-router';
 import api from '../../services/api';
 import COLORS from '../../utils/colors';
 
 interface Conversation {
-    _id: string;
+    id: string;
     status: 'active' | 'ended';
     createdAt: string;
     updatedAt: string;
@@ -54,8 +55,16 @@ export default function HistoryScreen() {
         return `${hours}:${minutes}`;
     };
 
+    const handleOpenConversation = (conversationId: string) => {
+        router.push(`/(patient)/${conversationId}`);
+    };
+
     const renderConversation = ({ item }: { item: Conversation }) => (
-        <View
+        <TouchableOpacity
+            onPress={() => handleOpenConversation(item.id)}
+            activeOpacity={0.7}
+        >
+            <View
             style={{
                 backgroundColor: COLORS.background.primary,
                 borderRadius: 12,
@@ -96,6 +105,7 @@ export default function HistoryScreen() {
                 </Text>
             </View>
         </View>
+        </TouchableOpacity>
     );
 
     if (isLoading) {
@@ -135,7 +145,7 @@ export default function HistoryScreen() {
         <View style={{ flex: 1, backgroundColor: COLORS.background.secondary }}>
             <FlatList
                 data={conversations}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item) => item.id}
                 renderItem={renderConversation}
                 contentContainerStyle={{ padding: 16 }}
                 ListEmptyComponent={

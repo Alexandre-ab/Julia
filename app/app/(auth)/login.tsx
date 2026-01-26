@@ -29,7 +29,7 @@ export default function LoginScreen() {
             router.replace('/');
         } catch (err) {
             console.error('❌ Login error:', err);
-            Alert.alert('Erreur', err.response?.data?.message || err.message || 'Erreur de connexion');
+            Alert.alert('Erreur', (err as any).response?.data?.message || (err as any).message || 'Erreur de connexion');
         } finally {
             setIsLoading(false);
         }

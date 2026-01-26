@@ -198,7 +198,7 @@ export const getHistory = async (req, res, next) => {
             .sort({ endedAt: -1 })
             .skip(skip)
             .limit(limit)
-            .select('startedAt endedAt highestGravityScore messages');
+            .select('createdAt updatedAt highestGravityScore messages');
 
         const total = await Conversation.countDocuments({
             patientId,
@@ -207,9 +207,10 @@ export const getHistory = async (req, res, next) => {
 
         const formattedConversations = conversations.map((conv) => ({
             id: conv._id,
-            startedAt: conv.startedAt,
-            endedAt: conv.endedAt,
-            messageCount: conv.messages.length,
+            status: conv.status,
+            createdAt: conv.createdAt,
+            updatedAt: conv.updatedAt,
+            messagesCount: conv.messages.length,
             highestGravityScore: conv.highestGravityScore,
         }));
 

@@ -17,7 +17,7 @@ const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 // Configuration for different use cases
 export const GEMINI_CONFIG = {
-    model: 'gemini-1.5-pro', // Latest stable model
+    model: 'models/gemini-2.5-flash',
     temperature: {
         gravityScore: 0.1, // Low temperature for consistent scoring
         summary: 0.3,      // Low temperature for factual summaries

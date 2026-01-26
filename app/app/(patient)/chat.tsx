@@ -14,10 +14,19 @@ export default function ChatScreen() {
     const flatListRef = useRef<FlatList>(null);
 
     useEffect(() => {
-        // Auto-démarrage au montage
-        if (!conversation) {
-            startConversation();
-        }
+        let mounted = true;
+        
+        const initConversation = async () => {
+            if (!conversation && mounted) {
+                await startConversation();
+            }
+        };
+        
+        initConversation();
+        
+        return () => {
+            mounted = false;
+        };
     }, []);
 
     const handleSend = async (message: string) => {
