@@ -6,7 +6,7 @@ Bienvenue dans la documentation complète du Projet J !
 
 ## 🗂️ Organisation
 
-La documentation est organisée en 3 catégories principales :
+La documentation est organisée en plusieurs catégories :
 
 ### 📖 **Guides** (`/guides/`)
 Documentation pour démarrer et utiliser le projet
@@ -16,6 +16,9 @@ Documentation des fonctionnalités implémentées
 
 ### 🧪 **Tests** (`/tests/`)
 Rapports de tests et guides de test
+
+### 🏗️ **Documentation Technique**
+Architecture, API, Sécurité, Déploiement, Développement
 
 ---
 
@@ -97,6 +100,69 @@ Rapports de tests et guides de test
 
 ---
 
+## 🏗️ Documentation Technique
+
+### [ARCHITECTURE.md](./ARCHITECTURE.md)
+**Architecture technique complète du système**
+- Vue d'ensemble du stack technologique
+- Architecture frontend (React Native + Expo)
+- Architecture backend (Node.js + Express + MongoDB)
+- Modèles de données (User, Conversation, SessionReport)
+- Flux de données détaillés
+- Intégration IA (OpenAI/Gemini)
+- Sécurité et performance
+
+**Statut** : ✅ Documentation complète
+
+### [API.md](./API.md)
+**Documentation complète de l'API REST**
+- Endpoints d'authentification (/auth/*)
+- Endpoints de chat (/chat/*)
+- Endpoints dashboard professionnel (/dashboard/*)
+- Codes d'erreur et formats de réponse
+- Exemples de requêtes curl/Postman
+- Rate limiting et headers requis
+
+**Statut** : ✅ Documentation complète
+
+### [SECURITE.md](./SECURITE.md)
+**Guide de sécurité et bonnes pratiques**
+- Authentification JWT
+- Hachage bcrypt des mots de passe
+- Contrôle d'accès par rôle (RBAC)
+- Rate limiting et protection API
+- CORS et headers de sécurité (Helmet)
+- Conformité RGPD
+- Audit de sécurité
+
+**Statut** : ✅ Documentation complète
+
+### [DEPLOIEMENT.md](./DEPLOIEMENT.md)
+**Guide de déploiement en production**
+- Déploiement backend (Render, Railway, VPS)
+- Configuration MongoDB Atlas
+- Build et publication app mobile (EAS)
+- Variables d'environnement production
+- Monitoring (Sentry, UptimeRobot)
+- CI/CD avec GitHub Actions
+- Maintenance et rollback
+
+**Statut** : ✅ Documentation complète
+
+### [DEVELOPPEMENT.md](./DEVELOPPEMENT.md)
+**Guide pour les développeurs**
+- Configuration environnement de développement
+- Standards de code (JavaScript, TypeScript)
+- Architecture du code (MVC, composants)
+- Workflow Git et conventions commits
+- Tests (Jest, React Native Testing Library)
+- Debugging (VS Code, React DevTools)
+- Process de contribution
+
+**Statut** : ✅ Documentation complète
+
+---
+
 ## 🚀 Démarrage Rapide
 
 **Pour commencer rapidement** :
@@ -128,11 +194,18 @@ docs/
 │   ├── GEMINI-ACTIVATION.md    # IA Gemini
 │   └── HISTORIQUE-FEATURE.md   # Historique cliquable
 │
-└── tests/                       # 🧪 Tests et validation
-    ├── TESTS-RESULTATS.md      # Rapport de tests API
-    ├── TEST-HISTORIQUE.md      # Guide de test historique
-    ├── test-connection.md      # Test de connexion
-    └── RESUME-TESTS.txt        # Résumé visuel
+├── tests/                       # 🧪 Tests et validation
+│   ├── TESTS-RESULTATS.md      # Rapport de tests API
+│   ├── TEST-HISTORIQUE.md      # Guide de test historique
+│   ├── test-connection.md      # Test de connexion
+│   └── RESUME-TESTS.txt        # Résumé visuel
+│
+└── [Racine docs/]              # 🏗️ Documentation technique
+    ├── ARCHITECTURE.md         # Architecture complète du système
+    ├── API.md                  # Documentation API REST
+    ├── SECURITE.md             # Guide de sécurité
+    ├── DEPLOIEMENT.md          # Guide de déploiement
+    └── DEVELOPPEMENT.md        # Guide pour développeurs
 ```
 
 ---
@@ -206,11 +279,17 @@ docs/
 - **IA** → [GEMINI-ACTIVATION.md](./features/GEMINI-ACTIVATION.md)
 - **Historique** → [HISTORIQUE-FEATURE.md](./features/HISTORIQUE-FEATURE.md)
 - **Tests** → [TESTS-RESULTATS.md](./tests/TESTS-RESULTATS.md)
+- **Architecture** → [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **API** → [API.md](./API.md)
+- **Sécurité** → [SECURITE.md](./SECURITE.md)
+- **Déploiement** → [DEPLOIEMENT.md](./DEPLOIEMENT.md)
+- **Développement** → [DEVELOPPEMENT.md](./DEVELOPPEMENT.md)
 
 **Par type** :
 - **Guides utilisateur** → `/guides/`
-- **Documentation technique** → `/features/`
+- **Fonctionnalités** → `/features/`
 - **Rapports de tests** → `/tests/`
+- **Documentation technique** → `ARCHITECTURE.md`, `API.md`, etc.
 
 ---
 
@@ -231,13 +310,19 @@ docs/
 
 ## 🎯 Feuille de Route
 
+**Documentation récemment ajoutée** :
+- [x] Architecture Technique Complète ✅
+- [x] Documentation API REST ✅
+- [x] Guide de Sécurité ✅
+- [x] Guide de Déploiement ✅
+- [x] Guide de Développement ✅
+
 **Prochaines documentations à créer** :
-- [ ] Guide du Dashboard Professionnel
-- [ ] Documentation des Notifications
-- [ ] Guide de Déploiement
-- [ ] Architecture Technique Complète
-- [ ] Guide de Contribution au Code
-- [ ] Documentation API (OpenAPI/Swagger)
+- [ ] Guide du Dashboard Professionnel (détaillé)
+- [ ] Documentation des Notifications Push
+- [ ] Schéma OpenAPI/Swagger (API)
+- [ ] Guide d'Accessibilité (A11y)
+- [ ] Documentation Internationalisation (i18n)
 
 ---
 
