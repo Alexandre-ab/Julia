@@ -1,27 +1,24 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
-import COLORS from '../../utils/colors';
+import CustomTabBar from '../../components/ui/CustomTabBar';
+
+const PRO_TABS = [
+    { name: 'dashboard', label: 'Dashboard', icon: 'grid-outline' as const, iconFocused: 'grid' as const },
+    { name: 'invite', label: 'Inviter', icon: 'person-add-outline' as const, iconFocused: 'person-add' as const },
+];
 
 export default function ProLayout() {
     return (
         <Tabs
+            tabBar={(props) => <CustomTabBar {...props} tabs={PRO_TABS} />}
             screenOptions={{
-                headerShown: true,
-                tabBarActiveTintColor: COLORS.primary[600],
-                tabBarInactiveTintColor: COLORS.text.secondary,
-                tabBarStyle: {
-                    paddingBottom: 8,
-                    paddingTop: 8,
-                    height: 65,
-                },
+                headerShown: false,
             }}
         >
             <Tabs.Screen
                 name="dashboard"
                 options={{
                     title: 'Mes Patients',
-                    tabBarLabel: 'Patients',
-                    tabBarIcon: ({ color }) => <Text style={{ color }}>👥</Text>,
+                    tabBarLabel: 'Dashboard',
                 }}
             />
             <Tabs.Screen
@@ -29,13 +26,12 @@ export default function ProLayout() {
                 options={{
                     title: 'Inviter un patient',
                     tabBarLabel: 'Inviter',
-                    tabBarIcon: ({ color }) => <Text style={{ color }}>➕</Text>,
                 }}
             />
             <Tabs.Screen
                 name="patient"
                 options={{
-                    href: null, // Masquer de la tab bar
+                    href: null,
                 }}
             />
         </Tabs>

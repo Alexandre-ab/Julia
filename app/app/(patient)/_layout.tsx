@@ -1,25 +1,19 @@
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
-import COLORS from '../../utils/colors';
+import CustomTabBar from '../../components/ui/CustomTabBar';
+
+const PATIENT_TABS = [
+    { name: 'chat', label: 'Chat', icon: 'chatbubble-outline' as const, iconFocused: 'chatbubble' as const },
+    { name: 'history', label: 'Historique', icon: 'time-outline' as const, iconFocused: 'time' as const },
+    { name: 'messages', label: 'Messages', icon: 'mail-outline' as const, iconFocused: 'mail' as const },
+    { name: 'profile', label: 'Profil', icon: 'person-outline' as const, iconFocused: 'person' as const },
+];
 
 export default function PatientLayout() {
     return (
         <Tabs
+            tabBar={(props) => <CustomTabBar {...props} tabs={PATIENT_TABS} />}
             screenOptions={{
                 headerShown: true,
-                tabBarActiveTintColor: COLORS.primary[600],
-                tabBarInactiveTintColor: COLORS.text.secondary,
-                tabBarStyle: {
-                    paddingBottom: 10,
-                    paddingTop: 10,
-                    height: 70,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: -2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 8,
-                    elevation: 8,
-                    borderTopWidth: 0,
-                },
             }}
         >
             <Tabs.Screen
@@ -27,7 +21,6 @@ export default function PatientLayout() {
                 options={{
                     headerTitle: '',
                     tabBarLabel: 'Chat',
-                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>💬</Text>,
                 }}
             />
             <Tabs.Screen
@@ -35,7 +28,14 @@ export default function PatientLayout() {
                 options={{
                     title: 'Historique',
                     tabBarLabel: 'Historique',
-                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>📋</Text>,
+                }}
+            />
+            <Tabs.Screen
+                name="messages"
+                options={{
+                    title: 'Messages',
+                    tabBarLabel: 'Messages',
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen
@@ -43,7 +43,13 @@ export default function PatientLayout() {
                 options={{
                     title: 'Profil',
                     tabBarLabel: 'Profil',
-                    tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 24 }}>👤</Text>,
+                    headerShown: false,
+                }}
+            />
+            <Tabs.Screen
+                name="[id]"
+                options={{
+                    href: null,
                 }}
             />
         </Tabs>

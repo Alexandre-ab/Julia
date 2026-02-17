@@ -130,6 +130,34 @@ export const markReportAsReadValidator = [
     handleValidationErrors,
 ];
 
+// ===== MESSAGE VALIDATORS =====
+
+export const sendMessageToPatientValidator = [
+    param('patientId').isMongoId().withMessage('ID patient invalide'),
+    body('subject')
+        .notEmpty()
+        .withMessage('Le sujet est requis')
+        .trim()
+        .isLength({ min: 3, max: 200 })
+        .withMessage('Le sujet doit faire entre 3 et 200 caractères'),
+    body('content')
+        .notEmpty()
+        .withMessage('Le contenu est requis')
+        .trim()
+        .isLength({ min: 10, max: 5000 })
+        .withMessage('Le contenu doit faire entre 10 et 5000 caractères'),
+    body('conversationId')
+        .optional()
+        .isMongoId()
+        .withMessage('ID de conversation invalide'),
+    handleValidationErrors,
+];
+
+export const markMessageAsReadValidatorMsg = [
+    param('id').isMongoId().withMessage('ID de message invalide'),
+    handleValidationErrors,
+];
+
 export default {
     registerValidator,
     loginValidator,
@@ -141,4 +169,6 @@ export default {
     getPatientConversationsValidator,
     getReportsValidator,
     markReportAsReadValidator,
+    sendMessageToPatientValidator,
+    markMessageAsReadValidatorMsg,
 };

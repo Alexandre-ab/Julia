@@ -10,6 +10,7 @@ import { generalLimiter } from './middleware/rateLimiter.js';
 import authRoutes from './routes/auth.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
+import messageRoutes from './routes/message.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -80,6 +81,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', messageRoutes);
 
 // ===== GESTION DES ERREURS =====
 

@@ -4,33 +4,20 @@
  */
 
 export const COLORS = {
-  // Primary (Indigo - Soft Blue)
+  // Primary (Rose Ancien - Chaleur & Réconfort)
   primary: {
-    50: '#EEF2FF',
-    100: '#E0E7FF',
-    200: '#C7D2FE',
-    300: '#A5B4FC',
-    400: '#818CF8',
-    500: '#6366F1', // Main primary color (soft indigo)
-    600: '#4F46E5',
-    700: '#4338CA',
-    800: '#3730A3',
-    900: '#312E81',
+    50: '#FBF2F3',   // Tint 90% — quasi blanc rosé (fonds subtils)
+    100: '#F3DADE',  // Tint 70% — rose très pâle (fonds, badges)
+    200: '#E4BCC1',  // Tint 50% — rose poudré clair (hover, accents doux)
+    300: '#D4A4AA',  // Tint 30% — rose doux (états secondaires)
+    400: '#C38D94',  // ← TA couleur de base ici
+    500: '#B07A82',  // Shade légère — boutons principaux, liens
+    600: '#9C6B73',  // Shade moyenne — boutons pressed, texte actif
+    700: '#7D5259',  // Shade forte — headers, éléments importants
+    800: '#5E3D43',  // Shade profonde — texte sur fond clair
+    900: '#3F282D',  // Shade maximale — mode sombre, contrastes forts
   },
 
-  // Indigo (same as primary for consistency)
-  indigo: {
-    50: '#EEF2FF',
-    100: '#E0E7FF',
-    200: '#C7D2FE',
-    300: '#A5B4FC',
-    400: '#818CF8',
-    500: '#6366F1',
-    600: '#4F46E5',
-    700: '#4338CA',
-    800: '#3730A3',
-    900: '#312E81',
-  },
 
   // Emerald (Sage Green alternative)
   emerald: {
@@ -101,26 +88,39 @@ export const COLORS = {
   error: '#EF4444',
   info: '#3B82F6',
 
-  // Backgrounds
+  // Backgrounds (tons chauds au lieu de blanc froid)
   background: {
-    primary: '#FFFFFF',
-    secondary: '#F9FAFB',
-    tertiary: '#F3F4F6',
+    primary: '#FFFBFB',   // Blanc très légèrement rosé
+    secondary: '#FBF2F3', // Rose 50 — fond secondaire chaud
+    tertiary: '#F3DADE',  // Rose 100 — fond tertiaire
   },
 
-  // Text
+  // Text (brun chaud au lieu de noir/gris froid)
   text: {
-    primary: '#111827',
-    secondary: '#6B7280',
-    tertiary: '#9CA3AF',
-    inverse: '#FFFFFF',
+    primary: '#3F282D',   // Rose 900 — texte principal brun chaud
+    secondary: '#7D5259', // Rose 700 — texte secondaire
+    tertiary: '#B07A82',  // Rose 500 — texte discret
+    inverse: '#FFFBFB',   // Blanc chaud pour texte sur fond foncé
   },
 
-  // Borders
+  // Borders (teintes chaudes)
   border: {
-    light: '#E5E7EB',
-    medium: '#D1D5DB',
-    dark: '#9CA3AF',
+    light: '#F3DADE',     // Rose 100
+    medium: '#E4BCC1',    // Rose 200
+    dark: '#D4A4AA',      // Rose 300
+  },
+
+  // Gradients for modern UI
+  gradients: {
+    primary: ['#C38D94', '#9C6B73'],      // Rose 400 → 600
+    secondary: ['#C38D94', '#B07A82'],    // Rose 400 → 500 (subtil)
+    success: ['#10B981', '#059669'],      // Emerald gradient
+    danger: ['#EF4444', '#DC2626'],       // Red gradient
+    warning: ['#F59E0B', '#D97706'],      // Orange gradient
+    subtle: ['#FBF2F3', '#F3DADE'],       // Rose 50 → 100 (fond doux)
+    card: ['#FFFFFF', '#FBF2F3'],         // Blanc → Rose 50
+    header: ['#B07A82', '#7D5259'],       // Rose 500 → 700 (affirmé)
+    rose: ['#FB7185', '#E11D48'],         // Rose gradient for SOS
   },
 } as const;
 

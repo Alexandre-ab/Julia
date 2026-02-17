@@ -1,17 +1,57 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, FlatList, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, SafeAreaView, TouchableOpacity, Alert, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useChat } from '../../hooks/useChat';
+import { useTheme } from '../../contexts/ThemeContext';
 import ChatBubble from '../../components/chat/ChatBubble';
 import ChatInput from '../../components/chat/ChatInput';
 import TypingIndicator from '../../components/chat/TypingIndicator';
+import EmptyState from '../../components/ui/EmptyState';
 import COLORS from '../../utils/colors';
 import { router } from 'expo-router';
 
 export default function ChatScreen() {
+    const { colors: t, isDark } = useTheme();
     const { conversation, isLoading, isSending, startConversation, sendMessage, endConversation } =
         useChat();
     const [showTyping, setShowTyping] = useState(false);
     const flatListRef = useRef<FlatList>(null);
+    const pulseAnim = useRef(new Animated.Value(1)).current;
+    const shadowAnim = useRef(new Animated.Value(0)).current;
+
+    // SOS button pulse animation
+    useEffect(() => {
+        Animated.loop(
+            Animated.parallel([
+                Animated.sequence([
+                    Animated.timing(pulseAnim, {
+                        toValue: 1.08,
+                        duration: 1200,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(pulseAnim, {
+                        toValue: 1,
+                        duration: 1200,
+                        useNativeDriver: true,
+                    }),
+                ]),
+                Animated.sequence([
+                    Animated.timing(shadowAnim, {
+                        toValue: 1,
+                        duration: 1200,
+                        useNativeDriver: false,
+                    }),
+                    Animated.timing(shadowAnim, {
+                        toValue: 0,
+                        duration: 1200,
+                        useNativeDriver: false,
+                    }),
+                ]),
+            ])
+        ).start();
+    }, []);
 
     useEffect(() => {
         let mounted = true;
@@ -43,6 +83,8 @@ export default function ChatScreen() {
     const handleEnd = async () => {
         if (!conversation) return;
 
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        
         Alert.alert(
             'Terminer la conversation',
             'Êtes-vous sûr de vouloir terminer cette conversation ?',
@@ -52,6 +94,7 @@ export default function ChatScreen() {
                     text: 'Terminer',
                     style: 'destructive',
                     onPress: async () => {
+                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                         await endConversation(conversation.id);
                     }
                 },
@@ -60,8 +103,11 @@ export default function ChatScreen() {
     };
 
     const handleSOS = () => {
+        // Strong haptic feedback for urgency
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        
         Alert.alert(
-            'Aide d\'urgence',
+            '🆘 Aide d\'urgence',
             'Besoin d\'aide immédiate ?\n\nNuméro d\'urgence : 3114\n(Numéro national de prévention du suicide)',
             [
                 { text: 'Fermer', style: 'cancel' },
@@ -72,116 +118,160 @@ export default function ChatScreen() {
     if (isLoading && !conversation) {
         return (
             <View
-                className="flex-1 items-center justify-center bg-slate-50"
                 style={{
                     flex: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: COLORS.slate[50],
+                    backgroundColor: t.bg,
                 }}
             >
                 <Text
-                    className="text-slate-600"
                     style={{
-                        color: COLORS.slate[600],
+                        color: t.textSecondary,
                         fontSize: 16,
+                        fontFamily: 'Jakarta',
                     }}
                 >
-                    Préparation...
+                    Preparation...
                 </Text>
             </View>
         );
     }
 
     const EmptyListComponent = () => (
-        <View
-            className="flex-1 items-center justify-center py-20"
-            style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                paddingVertical: 80,
-            }}
-        >
-            <Text
-                className="text-slate-400 text-center text-lg px-8"
-                style={{
-                    color: COLORS.slate[400],
-                    textAlign: 'center',
-                    fontSize: 18,
-                    lineHeight: 26,
-                    paddingHorizontal: 32,
-                }}
-            >
-                Bonjour, je suis là pour vous écouter.{'\n'}Comment vous sentez-vous ?
-            </Text>
-        </View>
+        <EmptyState
+            icon="chatbubble-ellipses-outline"
+            title="Bienvenue"
+            description="Je suis la pour vous ecouter. Comment vous sentez-vous aujourd'hui ?"
+            action={
+                <View
+                    style={{
+                        backgroundColor: isDark ? COLORS.primary[900] + '40' : COLORS.primary[50],
+                        paddingHorizontal: 20,
+                        paddingVertical: 12,
+                        borderRadius: 16,
+                        borderWidth: 1,
+                        borderColor: isDark ? COLORS.primary[700] : COLORS.primary[200],
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Ionicons name="bulb-outline" size={16} color={COLORS.primary[isDark ? 300 : 700]} style={{ marginRight: 8 }} />
+                    <Text
+                        style={{
+                            color: COLORS.primary[isDark ? 300 : 700],
+                            fontSize: 14,
+                            fontWeight: '600',
+                            fontFamily: 'Jakarta-SemiBold',
+                        }}
+                    >
+                        Ecrivez votre premier message ci-dessous
+                    </Text>
+                </View>
+            }
+            style={{ paddingVertical: 80 }}
+        />
     );
 
     return (
         <SafeAreaView
-            className="flex-1 bg-slate-50"
             style={{
                 flex: 1,
-                backgroundColor: COLORS.slate[50],
+                backgroundColor: t.bgSecondary,
             }}
         >
             {/* Header with SOS and Close buttons */}
             <View
-                className="flex-row items-center justify-between px-4 py-3 bg-slate-50"
                 style={{
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     paddingHorizontal: 16,
                     paddingVertical: 12,
-                    backgroundColor: COLORS.slate[50],
+                    backgroundColor: t.bgSecondary,
                 }}
             >
-                {/* SOS Button - Left */}
-                <TouchableOpacity
-                    onPress={handleSOS}
-                    className="bg-rose-100 rounded-full px-4 py-2 shadow-sm"
+                {/* SOS Button - Left with pulse animation */}
+                <Animated.View
                     style={{
-                        backgroundColor: COLORS.rose[100],
-                        borderRadius: 999,
-                        paddingHorizontal: 16,
-                        paddingVertical: 8,
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 1 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 2,
-                        elevation: 2,
+                        transform: [{ scale: pulseAnim }],
                     }}
                 >
-                    <Text
-                        className="text-rose-600 font-semibold text-sm"
-                        style={{
-                            color: COLORS.rose[600],
-                            fontWeight: '600',
-                            fontSize: 14,
-                        }}
+                    <TouchableOpacity
+                        onPress={handleSOS}
+                        activeOpacity={0.8}
                     >
-                        🆘 SOS
-                    </Text>
-                </TouchableOpacity>
+                        <LinearGradient
+                            colors={COLORS.gradients.rose}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={{
+                                borderRadius: 999,
+                                paddingHorizontal: 20,
+                                paddingVertical: 10,
+                                shadowColor: COLORS.rose[600],
+                                shadowOffset: { width: 0, height: 4 },
+                                shadowOpacity: shadowAnim.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0.3, 0.6],
+                                }),
+                                shadowRadius: 8,
+                                elevation: 8,
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    color: '#FFFFFF',
+                                    fontWeight: 'bold',
+                                    fontSize: 15,
+                                    letterSpacing: 0.5,
+                                }}
+                            >
+                                🆘 SOS
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </Animated.View>
 
-                {/* Close Button - Right */}
+                {/* End Conversation Button - Right */}
                 {conversation?.status === 'active' && (
                     <TouchableOpacity
                         onPress={handleEnd}
-                        className="p-2"
+                        activeOpacity={0.75}
                         style={{
-                            padding: 8,
+                            borderRadius: 999,
+                            paddingHorizontal: 18,
+                            paddingVertical: 10,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: isDark ? COLORS.slate[700] : COLORS.slate[200],
+                            borderWidth: 1,
+                            borderColor: isDark ? COLORS.slate[600] : COLORS.slate[300],
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.08,
+                            shadowRadius: 4,
+                            elevation: 3,
                         }}
                     >
+                        <Ionicons
+                            name="stop-circle-outline"
+                            size={16}
+                            color={isDark ? COLORS.slate[300] : COLORS.slate[600]}
+                            style={{ marginRight: 6 }}
+                        />
                         <Text
-                            className="text-slate-500 text-2xl"
                             style={{
-                                color: COLORS.slate[500],
-                                fontSize: 24,
+                                color: isDark ? COLORS.slate[200] : COLORS.slate[700],
+                                fontWeight: '600',
+                                fontSize: 14,
+                                letterSpacing: 0.3,
+                                fontFamily: 'Jakarta-SemiBold',
                             }}
                         >
-                            ✕
+                            Fin
                         </Text>
                     </TouchableOpacity>
                 )}
@@ -189,21 +279,23 @@ export default function ChatScreen() {
 
             {conversation?.isBeingViewedByPro && (
                 <View
-                    className="bg-indigo-50 px-4 py-2"
                     style={{
-                        backgroundColor: COLORS.indigo[50],
+                        backgroundColor: isDark ? COLORS.primary[900] + '40' : COLORS.primary[50],
                         paddingHorizontal: 16,
                         paddingVertical: 8,
+                        flexDirection: 'row',
+                        alignItems: 'center',
                     }}
                 >
+                    <Ionicons name="eye" size={14} color={COLORS.primary[isDark ? 300 : 700]} style={{ marginRight: 8 }} />
                     <Text
-                        className="text-indigo-700 text-sm"
                         style={{
-                            color: COLORS.indigo[700],
+                            color: COLORS.primary[isDark ? 300 : 700],
                             fontSize: 14,
+                            fontFamily: 'Jakarta',
                         }}
                     >
-                        🔵 Votre thérapeute consulte cette conversation
+                        Votre therapeute consulte cette conversation
                     </Text>
                 </View>
             )}
@@ -220,11 +312,18 @@ export default function ChatScreen() {
                         gravityScore={item.gravityScore}
                     />
                 )}
+                style={{
+                    flex: 1,
+                    marginBottom: 160, // Espace pour l'input (environ 80px) + tabs (70px) + marge
+                }}
                 contentContainerStyle={{
                     paddingHorizontal: 16,
-                    paddingVertical: 16,
+                    paddingTop: 16,
+                    paddingBottom: 20,
                     flexGrow: 1,
                 }}
+                showsVerticalScrollIndicator={true}
+                keyboardShouldPersistTaps="handled"
                 onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                 ListFooterComponent={showTyping ? <TypingIndicator /> : null}
                 ListEmptyComponent={EmptyListComponent}
@@ -232,11 +331,20 @@ export default function ChatScreen() {
 
             {conversation?.status === 'active' && (
                 <View
-                    className="bg-white border-t border-gray-100"
                     style={{
-                        backgroundColor: COLORS.background.primary,
+                        position: 'absolute',
+                        bottom: 70, // Hauteur de la navigation tabs
+                        left: 0,
+                        right: 0,
+                        backgroundColor: t.bg,
                         borderTopWidth: 1,
-                        borderTopColor: COLORS.slate[100],
+                        borderTopColor: t.border,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: -2 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 8,
+                        elevation: 10,
+                        zIndex: 100,
                     }}
                 >
                     <ChatInput onSend={handleSend} disabled={isSending} />

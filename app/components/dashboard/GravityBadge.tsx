@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, Animated } from 'react-native';
 import { GRAVITY_COLORS, GRAVITY_LABELS } from '../../utils/constants';
 
 interface GravityBadgeProps {
@@ -17,33 +17,97 @@ export const GravityBadge: React.FC<GravityBadgeProps> = ({
 }) => {
     const color = GRAVITY_COLORS[score];
     const label = GRAVITY_LABELS[score];
+    const pulseAnim = useRef(new Animated.Value(1)).current;
 
-    const sizeClasses = {
-        sm: 'w-6 h-6',
-        md: 'w-8 h-8',
-        lg: 'w-10 h-10',
+    useEffect(() => {
+        if (animated && score === 3) {
+            // Pulse animation for critical score
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(pulseAnim, {
+                        toValue: 1.2,
+                        duration: 800,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(pulseAnim, {
+                        toValue: 1,
+                        duration: 800,
+                        useNativeDriver: true,
+                    }),
+                ])
+            ).start();
+        }
+    }, [animated, score]);
+
+    const sizeMap = {
+        sm: { width: 24, height: 24, fontSize: 12 },
+        md: { width: 32, height: 32, fontSize: 14 },
+        lg: { width: 40, height: 40, fontSize: 16 },
     };
 
-    const textSizeClasses = {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base',
+    const textSizeMap = {
+        sm: 12,
+        md: 14,
+        lg: 16,
+    };
+
+    const iconMap = {
+        1: '✓',
+        2: '!',
+        3: '!!',
     };
 
     return (
-        <View className="flex-row items-center">
-            <View
-                className={`${sizeClasses[size]} rounded-full items-center justify-center ${animated && score === 3 ? 'animate-pulse' : ''
-                    }`}
-                style={{ backgroundColor: color }}
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Animated.View
+                style={{
+                    width: sizeMap[size].width,
+                    height: sizeMap[size].height,
+                    borderRadius: sizeMap[size].width / 2,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: color,
+                    transform: animated && score === 3 ? [{ scale: pulseAnim }] : [],
+                    shadowColor: color,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.4,
+                    shadowRadius: 4,
+                    elevation: 4,
+                }}
             >
-                <Text className={`text-white font-bold ${textSizeClasses[size]}`}>{score}</Text>
-            </View>
+                <Text 
+                    style={{ 
+                        color: '#FFFFFF', 
+                        fontWeight: 'bold',
+                        fontSize: sizeMap[size].fontSize,
+                    }}
+                >
+                    {iconMap[score]}
+                </Text>
+            </Animated.View>
 
             {showLabel && (
-                <Text className={`ml-2 font-medium ${textSizeClasses[size]}`} style={{ color }}>
-                    {label}
-                </Text>
+                <View
+                    style={{
+                        marginLeft: 8,
+                        backgroundColor: `${color}20`,
+                        paddingHorizontal: 10,
+                        paddingVertical: 4,
+                        borderRadius: 8,
+                        borderWidth: 1,
+                        borderColor: color,
+                    }}
+                >
+                    <Text 
+                        style={{ 
+                            fontWeight: '600',
+                            fontSize: textSizeMap[size],
+                            color: color,
+                        }}
+                    >
+                        {label}
+                    </Text>
+                </View>
             )}
         </View>
     );

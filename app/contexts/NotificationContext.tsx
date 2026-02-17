@@ -28,8 +28,8 @@ interface NotificationProviderProps {
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
     const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
     const [notification, setNotification] = useState<Notifications.Notification | null>(null);
-    const notificationListener = useRef<Notifications.Subscription | undefined>();
-    const responseListener = useRef<Notifications.Subscription | undefined>();
+    const notificationListener = useRef<any>(null);
+    const responseListener = useRef<any>(null);
 
     useEffect(() => {
         // S'inscrire aux notifications au montage
@@ -47,12 +47,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         });
 
         return () => {
-            if (notificationListener.current) {
-                notificationListener.current.remove();
-            }
-            if (responseListener.current) {
-                responseListener.current.remove();
-            }
+            notificationListener.current?.remove?.();
+            responseListener.current?.remove?.();
         };
     }, []);
 

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform, Animated } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
 import { MESSAGE_CONSTRAINTS } from '../../utils/constants';
 import COLORS from '../../utils/colors';
 
@@ -15,16 +17,73 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     placeholder = 'Écrivez votre message...',
 }) => {
     const [message, setMessage] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+    const rotateAnim = useRef(new Animated.Value(0)).current;
+    const borderColorAnim = useRef(new Animated.Value(0)).current;
+
+    const isValid = message.trim().length > 0 && message.length <= MESSAGE_CONSTRAINTS.MAX_LENGTH;
+
+    useEffect(() => {
+        // Animate border color on focus
+        Animated.timing(borderColorAnim, {
+            toValue: isFocused ? 1 : 0,
+            duration: 200,
+            useNativeDriver: false,
+        }).start();
+    }, [isFocused]);
+
+    useEffect(() => {
+        // Animate button when message is valid
+        if (isValid) {
+            Animated.spring(scaleAnim, {
+                toValue: 1.05,
+                friction: 3,
+                useNativeDriver: true,
+            }).start();
+        } else {
+            Animated.spring(scaleAnim, {
+                toValue: 1,
+                friction: 3,
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [isValid]);
 
     const handleSend = () => {
         if (message.trim().length === 0) return;
         if (message.length > MESSAGE_CONSTRAINTS.MAX_LENGTH) return;
 
+        // Haptic feedback
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+        // Rotation animation
+        Animated.sequence([
+            Animated.timing(rotateAnim, {
+                toValue: 1,
+                duration: 200,
+                useNativeDriver: true,
+            }),
+            Animated.timing(rotateAnim, {
+                toValue: 0,
+                duration: 0,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
         onSend(message.trim());
         setMessage('');
     };
 
-    const isValid = message.trim().length > 0 && message.length <= MESSAGE_CONSTRAINTS.MAX_LENGTH;
+    const borderColor = borderColorAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [COLORS.slate[300], COLORS.primary[500]],
+    });
+
+    const rotation = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
 
     return (
         <KeyboardAvoidingView
@@ -47,77 +106,123 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                     }}
                 >
                     <View
-                        className="flex-1 mr-2"
                         style={{
                             flex: 1,
                             marginRight: 8,
                         }}
                     >
-                        <TextInput
-                            value={message}
-                            onChangeText={setMessage}
-                            placeholder={placeholder}
-                            placeholderTextColor={COLORS.slate[400]}
-                            multiline
-                            maxLength={MESSAGE_CONSTRAINTS.MAX_LENGTH}
-                            editable={!disabled}
-                            className="border border-slate-300 rounded-full px-5 py-3 max-h-[100px] text-base text-slate-900 bg-white shadow-md"
+                        <Animated.View
                             style={{
-                                minHeight: 44,
-                                borderWidth: 1,
-                                borderColor: COLORS.slate[300],
+                                borderWidth: 2,
+                                borderColor: borderColor,
                                 borderRadius: 999,
-                                paddingHorizontal: 20,
-                                paddingVertical: 12,
-                                maxHeight: 100,
-                                fontSize: 16,
-                                color: COLORS.slate[900],
                                 backgroundColor: '#FFFFFF',
-                                shadowColor: '#000',
+                                shadowColor: isFocused ? COLORS.primary[600] : '#000',
                                 shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: 0.08,
-                                shadowRadius: 4,
-                                elevation: 3,
+                                shadowOpacity: isFocused ? 0.15 : 0.08,
+                                shadowRadius: isFocused ? 6 : 4,
+                                elevation: isFocused ? 5 : 3,
                             }}
-                        />
+                        >
+                            <TextInput
+                                value={message}
+                                onChangeText={setMessage}
+                                onFocus={() => {
+                                    setIsFocused(true);
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                                }}
+                                onBlur={() => setIsFocused(false)}
+                                placeholder={placeholder}
+                                placeholderTextColor={COLORS.slate[400]}
+                                multiline
+                                maxLength={MESSAGE_CONSTRAINTS.MAX_LENGTH}
+                                editable={!disabled}
+                                style={{
+                                    minHeight: 44,
+                                    paddingHorizontal: 20,
+                                    paddingVertical: 12,
+                                    maxHeight: 100,
+                                    fontSize: 16,
+                                    color: COLORS.slate[900],
+                                }}
+                            />
+                        </Animated.View>
                         {message.length > MESSAGE_CONSTRAINTS.MAX_LENGTH * 0.9 && (
-                            <Text
-                                className="text-xs text-slate-500 mt-1"
+                            <Animated.Text
                                 style={{
                                     fontSize: 12,
-                                    color: COLORS.slate[500],
+                                    color: message.length >= MESSAGE_CONSTRAINTS.MAX_LENGTH ? COLORS.error : COLORS.slate[500],
                                     marginTop: 4,
+                                    fontWeight: message.length >= MESSAGE_CONSTRAINTS.MAX_LENGTH ? '600' : '400',
                                 }}
                             >
                                 {message.length} / {MESSAGE_CONSTRAINTS.MAX_LENGTH}
-                            </Text>
+                            </Animated.Text>
                         )}
                     </View>
 
-                    <TouchableOpacity
-                        onPress={handleSend}
-                        disabled={!isValid || disabled}
-                        className={`w-11 h-11 rounded-full items-center justify-center ${isValid && !disabled ? 'bg-indigo-500' : 'bg-slate-300'}`}
+                    <Animated.View
                         style={{
-                            width: 44,
-                            height: 44,
-                            borderRadius: 22,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: isValid && !disabled ? COLORS.indigo[500] : COLORS.slate[300],
+                            transform: [{ scale: scaleAnim }, { rotate: rotation }],
                         }}
                     >
-                        <Text
-                            className="text-white text-lg font-bold"
-                            style={{
-                                color: COLORS.text.inverse,
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                            }}
+                        <TouchableOpacity
+                            onPress={handleSend}
+                            disabled={!isValid || disabled}
+                            activeOpacity={0.8}
                         >
-                            ↑
-                        </Text>
-                    </TouchableOpacity>
+                            {isValid && !disabled ? (
+                                <LinearGradient
+                                    colors={COLORS.gradients.primary}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={{
+                                        width: 44,
+                                        height: 44,
+                                        borderRadius: 22,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        shadowColor: COLORS.primary[600],
+                                        shadowOffset: { width: 0, height: 3 },
+                                        shadowOpacity: 0.4,
+                                        shadowRadius: 6,
+                                        elevation: 6,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: COLORS.text.inverse,
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        ↑
+                                    </Text>
+                                </LinearGradient>
+                            ) : (
+                                <View
+                                    style={{
+                                        width: 44,
+                                        height: 44,
+                                        borderRadius: 22,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        backgroundColor: COLORS.slate[300],
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            color: COLORS.text.inverse,
+                                            fontSize: 20,
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        ↑
+                                    </Text>
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                    </Animated.View>
                 </View>
             </View>
         </KeyboardAvoidingView>

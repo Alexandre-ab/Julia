@@ -70,11 +70,11 @@ node_modules/
 
 ### Nettoyage de la documentation :
 1. **`docs/tests/test-connection.md`**
-   - Remplacé : `MONGODB_URI=mongodb+srv://alex:alex1234@...`
+   - Remplacé : `MONGODB_URI=mongodb+srv://[ANCIENNES_CREDENTIALS]@...`
    - Par : `MONGODB_URI=mongodb+srv://[USERNAME]:[PASSWORD]@...`
-   - Remplacé : `GEMINI_API_KEY=AIzaSy...`
+   - Remplacé : `GEMINI_API_KEY=[ANCIENNE_CLE]`
    - Par : `GEMINI_API_KEY=[VOTRE_CLE_GEMINI_ICI]`
-   - Remplacé : `JWT_SECRET=b54b31c...`
+   - Remplacé : `JWT_SECRET=[ANCIEN_SECRET]`
    - Par : `JWT_SECRET=[VOTRE_JWT_SECRET_ICI]`
 
 2. **`docs/guides/DEMARRAGE-RAPIDE.md`**
