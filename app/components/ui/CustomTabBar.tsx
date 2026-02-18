@@ -42,19 +42,12 @@ function TabBarItem({
 }) {
     const { colors: t, isDark } = useTheme();
     const scaleAnim = useRef(new Animated.Value(1)).current;
-    const bgAnim = useRef(new Animated.Value(0)).current;
     const iconTranslateY = useRef(new Animated.Value(0)).current;
     const labelOpacity = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
     const dotScale = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
 
     useEffect(() => {
         Animated.parallel([
-            Animated.spring(bgAnim, {
-                toValue: isFocused ? 1 : 0,
-                friction: 8,
-                tension: 60,
-                useNativeDriver: false,
-            }),
             Animated.spring(iconTranslateY, {
                 toValue: isFocused ? -2 : 0,
                 friction: 8,
@@ -75,10 +68,9 @@ function TabBarItem({
         ]).start();
     }, [isFocused]);
 
-    const bgColor = bgAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['transparent', isDark ? COLORS.primary[900] + '40' : COLORS.primary[50]],
-    });
+    const bgColor = isFocused
+        ? (isDark ? COLORS.primary[900] + '40' : COLORS.primary[50])
+        : 'transparent';
 
     const handlePress = () => {
         Animated.sequence([

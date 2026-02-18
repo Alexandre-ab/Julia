@@ -9,7 +9,7 @@ import AnimatedButton from '../../components/ui/AnimatedButton';
 import AnimatedCard from '../../components/ui/AnimatedCard';
 import { useTheme } from '../../contexts/ThemeContext';
 import COLORS from '../../utils/colors';
-
+import QRCode from 'react-native-qrcode-svg';       // export par défaut
 export default function InviteScreen() {
     const { colors: t, isDark } = useTheme();
     const [inviteLink, setInviteLink] = useState('');
@@ -249,7 +249,22 @@ export default function InviteScreen() {
                                     </View>
                                 </View>
                             </AnimatedCard>
-
+                            
+                            {/* QR Code pour le lien d'invitation */}
+                            <AnimatedCard
+                                useGradient={true}
+                                gradientColors={['#FFFFFF', '#F0FDF4']}
+                                style={{marginBottom: 16}}
+                            >
+                            <View style={{ alignItems: 'center', marginVertical: 20 }}>
+                                <QRCode
+                                    value={inviteLink}
+                                    size={200}
+                                    color={COLORS.primary[700]}
+                                    backgroundColor="white"
+                                />
+                            </View>
+                            </AnimatedCard>
                             {/* Bouton pour générer un nouveau lien */}
                             <TouchableOpacity
                                 onPress={handleGenerate}

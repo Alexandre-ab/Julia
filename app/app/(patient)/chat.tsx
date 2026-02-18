@@ -11,6 +11,7 @@ import TypingIndicator from '../../components/chat/TypingIndicator';
 import EmptyState from '../../components/ui/EmptyState';
 import COLORS from '../../utils/colors';
 import { router } from 'expo-router';
+import { Keyboard,Easing} from 'react-native';
 
 export default function ChatScreen() {
     const { colors: t, isDark } = useTheme();
@@ -19,36 +20,22 @@ export default function ChatScreen() {
     const [showTyping, setShowTyping] = useState(false);
     const flatListRef = useRef<FlatList>(null);
     const pulseAnim = useRef(new Animated.Value(1)).current;
-    const shadowAnim = useRef(new Animated.Value(0)).current;
+    const keyboardHeight = useRef(new Animated.Value(70)).current;
 
     // SOS button pulse animation
     useEffect(() => {
         Animated.loop(
-            Animated.parallel([
-                Animated.sequence([
-                    Animated.timing(pulseAnim, {
-                        toValue: 1.08,
-                        duration: 1200,
-                        useNativeDriver: true,
-                    }),
-                    Animated.timing(pulseAnim, {
-                        toValue: 1,
-                        duration: 1200,
-                        useNativeDriver: true,
-                    }),
-                ]),
-                Animated.sequence([
-                    Animated.timing(shadowAnim, {
-                        toValue: 1,
-                        duration: 1200,
-                        useNativeDriver: false,
-                    }),
-                    Animated.timing(shadowAnim, {
-                        toValue: 0,
-                        duration: 1200,
-                        useNativeDriver: false,
-                    }),
-                ]),
+            Animated.sequence([
+                Animated.timing(pulseAnim, {
+                    toValue: 1.08,
+                    duration: 1200,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(pulseAnim, {
+                    toValue: 1,
+                    duration: 1200,
+                    useNativeDriver: true,
+                }),
             ])
         ).start();
     }, []);
@@ -66,6 +53,29 @@ export default function ChatScreen() {
         
         return () => {
             mounted = false;
+        };
+    }, []);
+    useEffect(() => {
+        const showListener = Keyboard.addListener('keyboardDidShow', (e) => {
+            Animated.timing(keyboardHeight, {
+                toValue: e.endCoordinates.height + 70, // Hauteur de la navigation tabs + keyboard height
+                duration: e.duration || 250,
+                easing: Easing.out(Easing.ease),
+                useNativeDriver: false,
+            }).start();
+        });
+        const hideListener = Keyboard.addListener('keyboardDidHide', () => {
+            Animated.timing(keyboardHeight, {
+                toValue: 70, // Hauteur de la navigation tabs
+                duration: 250,
+                easing: Easing.out(Easing.ease),
+                useNativeDriver: false,
+            }).start();
+        });
+
+        return () => {
+            showListener.remove();
+            hideListener.remove();
         };
     }, []);
 
@@ -202,7 +212,7 @@ export default function ChatScreen() {
                         activeOpacity={0.8}
                     >
                         <LinearGradient
-                            colors={COLORS.gradients.rose}
+                            colors={COLORS.gradients.rose as any}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={{
@@ -211,10 +221,7 @@ export default function ChatScreen() {
                                 paddingVertical: 10,
                                 shadowColor: COLORS.rose[600],
                                 shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: shadowAnim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [0.3, 0.6],
-                                }),
+                                shadowOpacity: 0.4,
                                 shadowRadius: 8,
                                 elevation: 8,
                                 flexDirection: 'row',
@@ -330,10 +337,10 @@ export default function ChatScreen() {
             />
 
             {conversation?.status === 'active' && (
-                <View
+                <Animated.View
                     style={{
                         position: 'absolute',
-                        bottom: 70, // Hauteur de la navigation tabs
+                        bottom: keyboardHeight, // Hauteur de la navigation tabs + keyboard height
                         left: 0,
                         right: 0,
                         backgroundColor: t.bg,
@@ -348,7 +355,7 @@ export default function ChatScreen() {
                     }}
                 >
                     <ChatInput onSend={handleSend} disabled={isSending} />
-                </View>
+                </Animated.View>
             )}
         </SafeAreaView>
     );

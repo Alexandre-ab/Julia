@@ -147,8 +147,9 @@ export const generateInvite = async (req, res, next) => {
         const inviteToken = await InviteToken.create({ proId });
 
         // Générer le lien complet
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:19006';
-        const inviteLink = `${frontendUrl}/signup?token=${inviteToken.token}`;
+        const frontendUrl = process.env.FRONTEND_URL;
+       const inviteLink = `${frontendUrl}/signup?token=${inviteToken.token}`;
+
 
         logger.info(`✅ Token d'invitation généré par pro ${proId}: ${inviteToken.token}`);
 
